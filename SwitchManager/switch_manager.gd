@@ -4,12 +4,13 @@
 ## For example, a one-off dialogue option could toggle a switch,
 ## so that it is not able to be triggered again.
 extends Node
+class_name SwitchManager
 
 ## Save path to save/load switches
-const SAVE_PATH := "res://switches.SAVE"
+@export_dir var SAVE_PATH := "res://switches.SAVE"
 
 ## List of a Name and Type (AKA. Switches).
-var switches := []
+@export var switches : Array[Switch] = []
 
 ## Saves switches to the file specified in SAVE_PATH
 func save_switches() -> void:
@@ -39,7 +40,7 @@ func erase_switches() -> void:
 
 ## Adds a switch to the switches list
 func create_switch(switch_name : String, switch_state := false) -> void:
-	for switch : Dictionary in switches:
+	for switch : Switch in switches:
 		if (switch.name == switch_name):
 			print("Switch name already exists, assigning state instead.")
 			set_switch_state(switch_name, switch_state)
@@ -49,7 +50,7 @@ func create_switch(switch_name : String, switch_state := false) -> void:
 
 ## Toggles a switch's state
 func toggle_switch(switch_name : String) -> void:
-	for switch : Dictionary in switches:
+	for switch : Switch in switches:
 		if switch.name == switch_name:
 			switch.state = !switch.state
 			return
@@ -58,7 +59,7 @@ func toggle_switch(switch_name : String) -> void:
 
 ## Sets a switch's state to the one specified
 func set_switch_state(switch_name : String, switch_state := false) -> void:
-	for switch : Dictionary in switches:
+	for switch : Switch in switches:
 		if switch.name == switch_name:
 			switch.state = switch_state
 			return
@@ -68,7 +69,7 @@ func set_switch_state(switch_name : String, switch_state := false) -> void:
 ## Returns the current state of the switch.
 ## If no switch is found, will return null by default.
 func get_switch(switch_name : String) -> Variant:
-	for switch : Dictionary in switches:
+	for switch : Switch in switches:
 		if switch.name == switch_name:
 			return switch.state
 	
