@@ -3,7 +3,7 @@
 
 ## For example, a one-off dialogue option could toggle a switch,
 ## so that it is not able to be triggered again.
-extends Node
+extends Object
 class_name SwitchManagerClass
 
 ## Save path to save/load switches
@@ -46,7 +46,12 @@ func create_switch(switch_name : String, switch_state := false) -> void:
 			set_switch_state(switch_name, switch_state)
 			return
 	
-	switches.append({"name": switch_name, "state": switch_state})
+	var new_switch : Switch = Switch.new()
+	
+	new_switch.name = switch_name
+	new_switch.state = switch_state
+	
+	switches.append(new_switch)
 
 ## Toggles a switch's state
 func toggle_switch(switch_name : String) -> void:
