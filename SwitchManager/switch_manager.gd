@@ -4,7 +4,7 @@
 ## For example, a one-off dialogue option could toggle a switch,
 ## so that it is not able to be triggered again.
 extends Node
-class_name SwitchManager
+class_name SwitchManagerClass
 
 ## Save path to save/load switches
 @export_dir var SAVE_PATH := "res://switches.SAVE"
