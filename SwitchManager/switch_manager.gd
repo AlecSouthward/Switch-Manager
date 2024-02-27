@@ -24,7 +24,7 @@ func load_switches() -> void:
 	if (FileAccess.file_exists(SAVE_PATH)):
 		var file := FileAccess.open(SAVE_PATH, FileAccess.READ)
 		
-		var switches_array := file.get_var()
+		var switches_array : Array = file.get_var()
 		switches.assign(switches_array)
 		
 		file.close()
