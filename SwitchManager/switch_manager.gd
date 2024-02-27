@@ -24,8 +24,10 @@ func load_switches() -> void:
 	if (FileAccess.file_exists(SAVE_PATH)):
 		var file := FileAccess.open(SAVE_PATH, FileAccess.READ)
 		
-		var switches_array : Variant = file.get_var()
-		switches.assign(switches_array)
+		var encoded_array : Array = file.get_var()
+		
+		for encoded_switch : EncodedObjectAsID in encoded_array:
+			switches.append(instance_from_id(encoded_switch.object_id))
 		
 		file.close()
 	else: print("Unable to find switches file to load")
