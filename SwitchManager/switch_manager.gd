@@ -16,7 +16,7 @@ class_name SwitchManagerClass
 func save_switches() -> void:
 	var file := FileAccess.open(SAVE_PATH, FileAccess.WRITE)
 	
-	file.store_var(switches)
+	file.store_var(JSON.stringify(switches, "", true, true))
 	file.close()
 
 ## Loads switches from the file specified in SAVE_PATH
@@ -24,10 +24,7 @@ func load_switches() -> void:
 	if (FileAccess.file_exists(SAVE_PATH)):
 		var file := FileAccess.open(SAVE_PATH, FileAccess.READ)
 		
-		var encoded_array : Array = file.get_var()
-		
-		for encoded_switch : EncodedObjectAsID in encoded_array:
-			switches.append(instance_from_id(encoded_switch.object_id))
+		switches = JSON.parse_string(file.get_var(true))
 		
 		file.close()
 	else: print("Unable to find switches file to load")
@@ -38,7 +35,7 @@ func erase_switches() -> void:
 		var file := FileAccess.open(SAVE_PATH, FileAccess.WRITE)
 		
 		switches = []
-		file.store_var(switches)
+		file.store_var(JSON.stringify(switches))
 		file.close()
 	else: print("Unable to find switches file to erase")
 

@@ -1,0 +1,16 @@
+[gd_scene load_steps=2 format=3 uid="uid://rwoiug7e64p"]
+
+[sub_resource type="GDScript" id="GDScript_rj0re"]
+script/source = "extends Node2D
+
+func _ready():
+	SwitchManager.erase_switches()
+	SwitchManager.create_switch(\"HEHE\")
+	SwitchManager.save_switches()
+	SwitchManager.load_switches()
+	
+	print(SwitchManager.get_switches())
+"
+
+[node name="Node2D" type="Node2D"]
+script = SubResource("GDScript_rj0re")
