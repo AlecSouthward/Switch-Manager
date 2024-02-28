@@ -4,27 +4,41 @@
 ## For example, a one-off dialogue option could toggle a switch,
 ## so that it is not able to be triggered again.
 extends Object
-class_name SwitchManagerClass
 
 ## Save path to save/load switches
-@export_dir var SAVE_PATH := "res://switches.SAVE"
+## Default location is inside AppData/Godot/YOUR_PROJECT_NAME/switches.SAVE
+@export_file var SAVE_PATH := "user://switches.SAVE"
 
 ## List of a Name and Type (AKA. Switches).
-@export var switches : Array[Switch] = []
+@export var switches : Array[Switch]
 
 ## Saves switches to the file specified in SAVE_PATH
 func save_switches() -> void:
-	var file := FileAccess.open(SAVE_PATH, FileAccess.WRITE)
+	var file := FileAccess.open_compressed(SAVE_PATH, FileAccess.WRITE, FileAccess.COMPRESSION_DEFLATE)
+	var json_dict := {}
 	
-	file.store_var(JSON.stringify(switches, "", true, true))
+	for switch : Switch in switches:
+		json_dict[switch.name] = switch.state
+	
+	file.store_string(JSON.stringify(json_dict))
 	file.close()
 
 ## Loads switches from the file specified in SAVE_PATH
 func load_switches() -> void:
 	if (FileAccess.file_exists(SAVE_PATH)):
-		var file := FileAccess.open(SAVE_PATH, FileAccess.READ)
+		var file := FileAccess.open_compressed(SAVE_PATH, FileAccess.READ, FileAccess.COMPRESSION_DEFLATE)
+		var file_content := file.get_as_text()
+		var json_dict : Dictionary = JSON.parse_string(file_content)
 		
-		switches = JSON.parse_string(file.get_var(true))
+		switches.clear()
+		
+		for element : String in json_dict:
+			var switch := Switch.new()
+			
+			switch.name = element
+			switch.state = json_dict[element]
+			
+			switches.append(switch)
 		
 		file.close()
 	else: print("Unable to find switches file to load")
@@ -32,10 +46,10 @@ func load_switches() -> void:
 ## Deletes all switches from the file specified in SAVE_PATH
 func erase_switches() -> void:
 	if (FileAccess.file_exists(SAVE_PATH)):
-		var file := FileAccess.open(SAVE_PATH, FileAccess.WRITE)
+		var file := FileAccess.open_compressed(SAVE_PATH, FileAccess.WRITE, FileAccess.COMPRESSION_DEFLATE)
 		
-		switches = []
-		file.store_var(JSON.stringify(switches))
+		switches.clear()
+		file.store_string("")
 		file.close()
 	else: print("Unable to find switches file to erase")
 
@@ -55,13 +69,14 @@ func create_switch(switch_name : String, switch_state := false) -> void:
 	switches.append(new_switch)
 
 ## Toggles a switch's state
-func toggle_switch(switch_name : String) -> void:
+func toggle_switch(switch_name : String) -> Variant:
 	for switch : Switch in switches:
 		if switch.name == switch_name:
 			switch.state = !switch.state
-			return
+			return switch.state
 	
 	printerr("Unable to toggle switch")
+	return null
 
 ## Sets a switch's state to the one specified
 func set_switch_state(switch_name : String, switch_state := false) -> void:
@@ -84,11 +99,12 @@ func get_switch(switch_name : String) -> Variant:
 
 ## Deletes a switch by name
 func delete_switch(switch_name : String) -> void:
-	if (switches.find(switch_name) == -1):
-		printerr("Unable to find switch to remove")
-		return
+	for switch : Switch in switches:
+		if switch.name == switch_name:
+			switches.erase(switch)
+			return
 	
-	switches.remove_at(switches.find(switch_name))
+	printerr("Unable to find switch to remove")
 
 ## Returns all switches inside the `switches` list
 func get_switches() -> Array: return switches

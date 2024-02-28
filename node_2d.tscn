@@ -4,12 +4,13 @@
 script/source = "extends Node2D
 
 func _ready():
-	SwitchManager.erase_switches()
 	SwitchManager.create_switch(\"HEHE\")
 	SwitchManager.save_switches()
 	SwitchManager.load_switches()
+	SwitchManager.delete_switch(\"HEHE\")
 	
-	print(SwitchManager.get_switches())
+	for thing : Switch in SwitchManager.get_switches():
+		print(thing.name)
 "
 
 [node name="Node2D" type="Node2D"]
