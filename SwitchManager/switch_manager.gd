@@ -52,7 +52,7 @@ func erase_switches() -> void:
 		file.store_string("")
 		file.close()
 	else: print("Unable to find switches file to erase")
-
+ 
 ## Adds a switch to the switches list
 func create_switch(switch_name : String, switch_state := false) -> void:
 	for switch : Switch in switches:
