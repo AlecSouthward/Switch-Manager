@@ -6,41 +6,8 @@
 extends Object
 class_name SwitchManagerClass
 
-## Save path to save/load switches
-@export_dir var SAVE_PATH := "res://switches.SAVE"
-
 ## List of a Name and Type (AKA. Switches).
 @export var switches : Array[Switch] = []
-
-## Saves switches to the file specified in SAVE_PATH
-func save_switches() -> void:
-	var file := FileAccess.open(SAVE_PATH, FileAccess.WRITE)
-	
-	file.store_var(switches)
-	file.close()
-
-## Loads switches from the file specified in SAVE_PATH
-func load_switches() -> void:
-	if (FileAccess.file_exists(SAVE_PATH)):
-		var file := FileAccess.open(SAVE_PATH, FileAccess.READ)
-		
-		var encoded_array : Array = file.get_var()
-		
-		for encoded_switch : EncodedObjectAsID in encoded_array:
-			switches.append(instance_from_id(encoded_switch.object_id))
-		
-		file.close()
-	else: print("Unable to find switches file to load")
-
-## Deletes all switches from the file specified in SAVE_PATH
-func erase_switches() -> void:
-	if (FileAccess.file_exists(SAVE_PATH)):
-		var file := FileAccess.open(SAVE_PATH, FileAccess.WRITE)
-		
-		switches = []
-		file.store_var(switches)
-		file.close()
-	else: print("Unable to find switches file to erase")
 
 ## Adds a switch to the switches list
 func create_switch(switch_name : String, switch_state := false) -> void:
